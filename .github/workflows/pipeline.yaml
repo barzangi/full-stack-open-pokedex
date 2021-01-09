@@ -16,8 +16,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-      - uses: akhileshns/heroku-deploy@v3.8.8
-        if: ${{ github.event_name == 'push' }}
+      - name: deploy to heroku
+        uses: akhileshns/heroku-deploy@v3.8.8
+        env:
+          COMMIT_MESSAGES: ${{ github.event.commits.*.message }}
+        if: ${{ github.event_name == 'push' && contains(join(COMMIT_MESSAGES), '#skip') == 'true' }}
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: 'fso-pokedex'
@@ -27,10 +30,11 @@ jobs:
           rollbackonhealthcheckfailed: true
       - name: bump version and push tag
         uses: anothrNick/github-tag-action@1.33.0
-        if: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+          COMMIT_MESSAGES: ${{ github.event.commits.*.message }}
+        if: ${{ github.event_name == 'push' && contains(join(COMMIT_MESSAGES), '#skip') == 'true' }}
       - name: npm install
         run: npm install
       - name: lint
