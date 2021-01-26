@@ -50,7 +50,7 @@ jobs:
           rollbackonhealthcheckfailed: true
       - name: notification on deploy success
         uses: 8398a7/action-slack@v3
-        if: ${{ success() && github.event_name == 'push' && !contains(join(github.event.commits.*.message), '#skip') }}
+        if: ${{ success() }}
         with:
           status: custom
           fields: commit,author,took
