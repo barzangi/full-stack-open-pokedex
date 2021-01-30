@@ -49,6 +49,7 @@ jobs:
           healthcheck: 'https://fso-pokedex.herokuapp.com/health'
           checkstring: 'ok'
           rollbackonhealthcheckfailed: true
+      - uses: actions/checkout@v2
       - name: bump version and push tag
         uses: anothrNick/github-tag-action@1.33.0
         # only bump version and push tag on successful PR merge AND no '#skip' text in commit message
